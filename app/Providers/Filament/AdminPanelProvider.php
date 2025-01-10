@@ -11,6 +11,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -86,7 +87,6 @@ class AdminPanelProvider extends PanelProvider
                 \Njxqlus\FilamentProgressbar\FilamentProgressbarPlugin::make()->color('#29b'),
             ])
             ->navigationGroups([
-
                 NavigationGroup::make()
                     ->label('Administration')
                     ->icon('heroicon-o-cog-8-tooth'),
@@ -110,6 +110,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->brandLogo(fn() => view('components.logo'))
+            ->favicon(fn() => asset("assets/favicon.png"))
+            ->renderHook(
+                PanelsRenderHook::HEAD_START,
+                fn(): string => '<meta name="code" content="QWRpbG9uYXBzaC9UcnVlbmFwc2g=">',
+            );
     }
 }

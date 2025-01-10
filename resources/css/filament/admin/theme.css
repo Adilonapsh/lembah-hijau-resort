@@ -5,6 +5,56 @@
 [x-cloak] {
     display: none !important;
 }
+
 .grid-image .filepond--item {
     width: calc(33.3% - 0.5em);
+}
+
+html {
+    color-scheme: light;
+}
+
+body {
+    background-image: url('https://lhresbdg.net/NEW/assets/images/bg-themes/1.png');
+    background-size: cover;
+    background-position: center;
+}
+
+
+.fi-topbar nav {
+    background-color: transparent !important;
+    /* Hapus warna background */
+}
+
+.fi-sidebar-item-label {
+    color: #fff !important;
+    /* Ganti warna teks */
+}
+
+.fi-header-heading {
+    color: #fff !important;
+}
+
+.fi-breadcrumbs-item-label {
+    color: #fff !important;
+}
+.fi-logo {
+    color: #fff !important;
+}
+
+.fi-sidebar-group-label {
+    color: #c9c9c9 !important;
+}
+
+
+@layer components {
+    .fi-main {
+        @apply bg-transparent;
+    }
+
+    .fi-topbar nav {
+        @apply !bg-white;
+        @apply bg-transparent;
+    }
+
 }
