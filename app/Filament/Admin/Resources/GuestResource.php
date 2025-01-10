@@ -18,6 +18,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -26,6 +27,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
 
 class GuestResource extends Resource
 {
@@ -108,6 +110,16 @@ class GuestResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id_kamar')
+                    ->label('Nama Kamar')
+                    ->getStateUsing(function ($record) {
+                        if ($record->id_kamar == null) {
+                            return '-';
+                        }
+                        return Room::find($record->id_kamar)->nama;
+                    })
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('nama')
                     ->label('Nama')
                     ->searchable()
@@ -197,6 +209,19 @@ class GuestResource extends Resource
                 BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+                BulkAction::make('pilih_kamar')
+                    ->label('Pilih Kamar')
+                    ->icon('heroicon-o-document-plus')
+                    ->action(fn(Collection $records, array $data) => static::processBulkAction($records, $data))
+                    ->requiresConfirmation()
+                    ->form([
+                        Forms\Components\Select::make('id_kamar')
+                            ->label('Nama Kamar')
+                            ->options(function () {
+                                return Room::all()->pluck('nama', 'id')->prepend('Pilih Ruangan', '');
+                            })
+                            ->searchable(),
+                    ]),
                 Tables\Actions\BulkAction::make('Checkin')
                     ->label('Checkin')
                     ->icon('heroicon-o-check-circle')
@@ -246,5 +271,19 @@ class GuestResource extends Resource
             'create' => Pages\CreateGuest::route('/create'),
             'edit' => Pages\EditGuest::route('/{record}/edit'),
         ];
+    }
+
+    public static function processBulkAction($records, $data)
+    {
+        foreach ($records as $record) {
+            $record->update([
+                'id_kamar' => $data['id_kamar'],
+            ]);
+        }
+        Notification::make()
+            ->title(count($records) . ' Tamu berhasil di set kamar')
+            ->icon('heroicon-o-check-circle')
+            ->success()
+            ->send();
     }
 }
