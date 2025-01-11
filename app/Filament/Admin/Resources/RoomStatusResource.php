@@ -3,23 +3,16 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\RoomStatusResource\Pages;
-use App\Filament\Admin\Resources\RoomStatusResource\RelationManagers;
-use App\Models\Guests;
 use App\Models\Room;
 use App\Models\RoomReportHistory;
-use App\Models\RoomStatus;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class RoomStatusResource extends Resource
 {
@@ -49,7 +42,6 @@ class RoomStatusResource extends Resource
         return false;
     }
 
-
     public static function table(Table $table): Table
     {
         return $table
@@ -71,13 +63,7 @@ class RoomStatusResource extends Resource
                 TextColumn::make('guests_count')
                     ->label('Bed Terisi')
                     ->getStateUsing(function ($record) {
-                        // dd($record);
                         return $record->guests_count ?? 0;
-                    }),
-                TextColumn::make('guests')
-                    ->label('Nama Tamu')
-                    ->getStateUsing(function ($record) {
-                        return $record->guests->pluck('nama')->implode(', ');
                     }),
                 TextColumn::make('kapasitas')
                     ->label('Jumlah Bed'),
@@ -85,6 +71,12 @@ class RoomStatusResource extends Resource
                     ->label('Sisa Bed')
                     ->getStateUsing(function ($record) {
                         return $record->kapasitas - $record->guests_count;
+                    }),
+                TextColumn::make('nama_tamu')
+                    ->label('Nama Tamu')
+                    ->badge()
+                    ->getStateUsing(function ($record) {
+                        return $record->guests->pluck('nama');
                     }),
             ])
             ->filters([
@@ -107,6 +99,7 @@ class RoomStatusResource extends Resource
                         $data->each(function ($room) {
                             $room->kapasitas = $room->kapasitas;
                             $room->tersisa = $room->kapasitas - $room->guests_count;
+                            $room->nama_tamu = $room->guests->pluck('nama');
                         });
                         if (RoomReportHistory::where('created_at', '>=', now()->startOfDay())->exists()) {
                             Notification::make()
@@ -115,6 +108,7 @@ class RoomStatusResource extends Resource
                                 ->body('Daily Report Sudah Dibuat Hari Ini')
                                 ->warning()
                                 ->send();
+
                             return;
                         } else {
                             foreach ($data as $room) {

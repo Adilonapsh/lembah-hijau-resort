@@ -3,18 +3,13 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\RoomResource\Pages;
-use App\Filament\Admin\Resources\RoomResource\RelationManagers;
 use App\Models\Room;
-use Faker\Provider\ar_EG\Text;
-use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class RoomResource extends Resource
 {
@@ -30,7 +25,7 @@ class RoomResource extends Resource
     {
         return $form
             ->schema([
-                Select::make("unit")
+                Select::make('unit')
                     ->label('Unit')
                     ->options([
                         'Bandung' => 'Bandung',
@@ -70,7 +65,6 @@ class RoomResource extends Resource
                     ->placeholder('Masukkan Kapasitas Kamar')
                     ->numeric()
                     ->columnSpanFull(),
-
 
             ]);
     }

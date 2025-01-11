@@ -111,11 +111,11 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->brandLogo(fn() => view('components.logo'))
-            ->favicon(fn() => asset("assets/favicon.png"))
+            ->brandLogo(fn () => view('components.logo'))
+            ->favicon(fn () => asset('assets/favicon.png'))
             ->renderHook(
                 PanelsRenderHook::HEAD_START,
-                fn(): string => '<meta name="code" content="QWRpbG9uYXBzaC9UcnVlbmFwc2g=">',
+                fn (): string => '<meta name="code" content="QWRpbG9uYXBzaC9UcnVlbmFwc2g=">',
             );
     }
 }

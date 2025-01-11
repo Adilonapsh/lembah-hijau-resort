@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Room extends Model
 {
     protected $table = 'rooms';
-    protected $guarded = ["id"];
+
+    protected $guarded = ['id'];
 
     public function guests()
     {

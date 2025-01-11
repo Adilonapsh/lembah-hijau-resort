@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class RoomReportHistory extends Model
 {
     protected $table = 'room_report_history';
-    protected $guarded = ["id"];
+
+    protected $guarded = ['id'];
 
     protected $casts = [
         'data_history' => 'json',
