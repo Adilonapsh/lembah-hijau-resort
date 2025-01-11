@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -908,6 +908,10 @@
         @livewire('register-form')
     </div>
     @livewireScripts()
-</body>
+</body> --}}
 
 </html>
+
+<x-filament-panels::page.simple>
+    @livewire('register-form')
+</x-filament-panels::page.simple>

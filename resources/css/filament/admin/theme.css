@@ -46,6 +46,26 @@ body {
     color: #c9c9c9 !important;
 }
 
+.fi-fo-field-wrp-label span:not([for="data.email"]):not([for="data.password"]) {
+    color: #fff !important;
+}
+
+.grid span {
+    color: #fff !important;
+}
+
+.fi-sidebar-header {
+    background-color: #00000000 !important;
+}
+
+.fi-simple-main {
+    background-color: #00000054 !important;
+}
+
+.fi-simple-header-heading {
+    color: #fff !important;
+}
+
 
 @layer components {
     .fi-main {

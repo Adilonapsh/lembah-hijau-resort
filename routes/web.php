@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Public\Pages\Registration;
 use Illuminate\Support\Facades\Route;
 
 /* NOTE: Do Not Remove
@@ -7,11 +8,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Livewire::setUpdateRoute(function ($handle) {
-    return Route::post(env('ASSET_PREFIX', '').'/livewire/update', $handle);
+    return Route::post(env('ASSET_PREFIX', '') . '/livewire/update', $handle);
 });
 
 Livewire::setScriptRoute(function ($handle) {
-    return Route::get(env('ASSET_PREFIX', '').'/livewire/livewire.js', $handle);
+    return Route::get(env('ASSET_PREFIX', '') . '/livewire/livewire.js', $handle);
 });
 /*
 / END
@@ -21,6 +22,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/registration', function () {
-    return view('registration');
-});
+Route::get('/registration', Registration::class);
+// Route::get('/registration', function () {
+//     return view('registration');
+// });
