@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('jenis_kelamin');
             $table->string('kantor_cabang');
-            $table->string('pendidikan_kelas');
+            $table->string('id_kelas');
             $table->string('batch');
             $table->string('kendaraan');
             $table->string('no_polisi');

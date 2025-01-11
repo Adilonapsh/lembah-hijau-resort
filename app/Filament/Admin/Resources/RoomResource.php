@@ -3,13 +3,17 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\RoomResource\Pages;
+use App\Models\Kelas;
 use App\Models\Room;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 
 class RoomResource extends Resource
 {
@@ -65,7 +69,11 @@ class RoomResource extends Resource
                     ->placeholder('Masukkan Kapasitas Kamar')
                     ->numeric()
                     ->columnSpanFull(),
-
+                Select::make('id_kelas')
+                    ->label('Kelas')
+                    ->options(\App\Models\Kelas::all()->pluck('nama_kelas', 'id'))
+                    ->placeholder('Kelas')
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -99,6 +107,11 @@ class RoomResource extends Resource
                     ->label('Kapasitas Kamar')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('id_kelas')
+                    ->label('Kelas')
+                    ->getStateUsing(function ($record) {
+                        return $record->kelas ?$record->kelas->nama_kelas : '-';
+                    }),
             ])
             ->filters([
                 //
@@ -110,6 +123,19 @@ class RoomResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+                BulkAction::make('pilih_kelas')
+                    ->label('Pilih Kelas')
+                    ->icon('heroicon-o-document-plus')
+                    ->action(fn(Collection $records, array $data) => static::processBulkAction($records, $data))
+                    ->requiresConfirmation()
+                    ->form([
+                        Select::make('id_kelas')
+                            ->label('Nama Kelas')
+                            ->options(function () {
+                                return Kelas::all()->pluck('nama_kelas', 'id')->prepend('Pilih Kelas', '');
+                            })
+                            ->searchable(),
+                    ]),
             ]);
     }
 
@@ -127,5 +153,19 @@ class RoomResource extends Resource
             'create' => Pages\CreateRoom::route('/create'),
             'edit' => Pages\EditRoom::route('/{record}/edit'),
         ];
+    }
+
+    public static function processBulkAction($records, $data)
+    {
+        foreach ($records as $record) {
+            $record->update([
+                'id_kelas' => $data['id_kelas'],
+            ]);
+        }
+        Notification::make()
+            ->title(count($records) . ' Kamar berhasil dipilih')
+            ->icon('heroicon-o-check-circle')
+            ->success()
+            ->send();
     }
 }

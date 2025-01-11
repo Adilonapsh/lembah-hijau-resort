@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\GuestResource\Pages;
 use App\Models\Guests;
+use App\Models\Kelas;
 use App\Models\Room;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -113,7 +114,6 @@ class GuestResource extends Resource
                         if ($record->id_kamar == null) {
                             return '-';
                         }
-
                         return Room::find($record->id_kamar)->nama;
                     })
                     ->searchable()
@@ -130,10 +130,11 @@ class GuestResource extends Resource
                     ->label('Kantor Cabang')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('pendidikan_kelas')
-                    ->label('Pendidikan/Kelas')
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('id_kelas')
+                    ->label('Kelas')
+                    ->getStateUsing(function ($record) {
+                        return $record->kelas ? $record->kelas->nama_kelas : '-';
+                    }),
                 TextColumn::make('batch')
                     ->label('Batch')
                     ->searchable()
@@ -177,12 +178,9 @@ class GuestResource extends Resource
                         'Motor' => 'Motor',
                         'Kendaraan Umum' => 'Kendaraan Umum',
                     ]),
-                SelectFilter::make('batch')
-                    ->label('batch')
-                    ->options([
-                        'BSDP 0 FOR FRONTLINER BATCH - 01/2025' => 'BSDP 0 FOR FRONTLINER BATCH - 01/2025',
-                        'BSDP 0 FOR FRONTLINER BATCH - 02/2025' => 'BSDP 0 FOR FRONTLINER BATCH - 02/2025',
-                    ]),
+                SelectFilter::make('id_kelas')
+                    ->label('Kelas')
+                    ->options(Kelas::pluck('nama_kelas', 'id')),
                 Filter::make('created_at')
                     ->form([
                         DatePicker::make('checkin'),
@@ -192,11 +190,11 @@ class GuestResource extends Resource
                         return $query
                             ->when(
                                 $data['checkin'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
                             )
                             ->when(
                                 $data['checkout'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                             );
                     }),
             ])
@@ -210,13 +208,15 @@ class GuestResource extends Resource
                 BulkAction::make('pilih_kamar')
                     ->label('Pilih Kamar')
                     ->icon('heroicon-o-document-plus')
-                    ->action(fn (Collection $records, array $data) => static::processBulkAction($records, $data))
+                    ->action(fn(Collection $records, array $data) => static::processBulkAction($records, $data))
                     ->requiresConfirmation()
                     ->form([
                         Forms\Components\Select::make('id_kamar')
                             ->label('Nama Kamar')
                             ->options(function () {
-                                return Room::all()->pluck('nama', 'id')->prepend('Pilih Ruangan', '');
+                                return Room::all()
+                                    ->pluck('nama', 'id')
+                                    ->prepend('Pilih Ruangan', '');
                             })
                             ->searchable(),
                     ]),
@@ -230,7 +230,7 @@ class GuestResource extends Resource
                             ]);
                         }
                         Notification::make()
-                            ->title(count($records).' Tamu berhasil checkin')
+                            ->title(count($records) . ' Tamu berhasil checkin')
                             ->icon('heroicon-o-check-circle')
                             ->success()
                             ->send();
@@ -245,8 +245,8 @@ class GuestResource extends Resource
                                 'tanggal_checkout' => now(),
                             ]);
                         }
-                        Notification::make(count($records).' Tamu berhasil checkout')
-                            ->title(count($records).' Tamu berhasil checkout')
+                        Notification::make(count($records) . ' Tamu berhasil checkout')
+                            ->title(count($records) . ' Tamu berhasil checkout')
                             ->icon('heroicon-o-arrow-top-right-on-square')
                             ->success()
                             ->send();
@@ -279,7 +279,7 @@ class GuestResource extends Resource
             ]);
         }
         Notification::make()
-            ->title(count($records).' Tamu berhasil di set kamar')
+            ->title(count($records) . ' Tamu berhasil di set kamar')
             ->icon('heroicon-o-check-circle')
             ->success()
             ->send();

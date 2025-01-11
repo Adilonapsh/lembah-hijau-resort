@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Models\Guests;
+use App\Models\Kelas;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
@@ -9,6 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Livewire\Component;
 
 class RegisterForm extends Component implements HasForms
@@ -41,11 +44,9 @@ class RegisterForm extends Component implements HasForms
                     ->required(),
                 Select::make('pendidikan_kelas')
                     ->label('Pendidikan/Kelas')
-                    ->options([
-                        'BSDP 0 FOR FRONTLINER BATCH - 01/2025' => 'BSDP 0 FOR FRONTLINER BATCH - 01/2025',
-                        'BSDP 0 FOR FRONTLINER BATCH - 02/2025' => 'BSDP 0 FOR FRONTLINER BATCH - 02/2025',
-                    ]),
-                TextInput::make('Batch')
+                    ->options(Kelas::pluck('nama_kelas', 'id'))
+                    ->required(),
+                TextInput::make('batch')
                     ->label('Batch')
                     ->required(),
                 Select::make('kendaraan')
@@ -74,7 +75,26 @@ class RegisterForm extends Component implements HasForms
 
     public function create(): void
     {
-        dd($this->form->getState());
+        try {
+            $this->form->validate();
+            Guests::create($this->form->getState());
+            Notification::make()
+                ->title('Berhasil')
+                ->icon('heroicon-o-chart-bar')
+                ->body('Data Sudah Dibuat')
+                ->success()
+                ->send();
+        } catch (\Exception) {
+            return;
+            Notification::make()
+                ->title('Gagal')
+                ->icon('heroicon-o-chart-bar')
+                ->body('Data Gagal Dibuat')
+                ->warning()
+                ->send();
+        }
+
+        // dd($this->form->getState());
     }
 
     public function render()

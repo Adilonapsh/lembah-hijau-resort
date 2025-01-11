@@ -14,4 +14,9 @@ class Room extends Model
     {
         return $this->hasMany(Guests::class, 'id_kamar', 'id');
     }
+
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class, 'id_kelas', 'id');
+    }
 }

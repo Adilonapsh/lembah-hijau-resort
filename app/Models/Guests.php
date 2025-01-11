@@ -14,4 +14,9 @@ class Guests extends Model
     {
         return $this->belongsTo(Room::class);
     }
+
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class, 'id_kelas', 'id');
+    }
 }
