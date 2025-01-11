@@ -11,6 +11,10 @@ class AdminDashboard extends Page
 
     protected static string $view = 'filament.admin.pages.admindashboard';
 
+    protected static ?string $navigationLabel = 'Dashboard';
+
+    protected static ?string $modelLabel = 'Dashboard';
+
     public $data = [];
 
     public function mount() {
