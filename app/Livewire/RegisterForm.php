@@ -76,7 +76,6 @@ class RegisterForm extends Component implements HasForms
     public function create(): void
     {
         try {
-            $this->form->validate();
             Guests::create($this->form->getState());
             Notification::make()
                 ->title('Berhasil')
@@ -84,12 +83,11 @@ class RegisterForm extends Component implements HasForms
                 ->body('Data Sudah Dibuat')
                 ->success()
                 ->send();
-        } catch (\Exception) {
-            return;
+        } catch (\Exception $e) {
             Notification::make()
                 ->title('Gagal')
                 ->icon('heroicon-o-chart-bar')
-                ->body('Data Gagal Dibuat')
+                ->body('Data Gagal Dibuat : ' . $e->getMessage())
                 ->warning()
                 ->send();
         }
