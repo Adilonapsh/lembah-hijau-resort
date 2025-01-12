@@ -83,13 +83,13 @@ class GuestResource extends Resource
                 TextInput::make('no_polisi')
                     ->label('No Polisi Kendaraan')
                     ->required(),
-                DatePicker::make('tanggal_checkin')
+                DatePicker::make('tanggal_rencana_checkin')
                     ->label('Tanggal Checkin')
                     ->required()
                     ->readOnly(function ($operation) {
                         return $operation == 'edit' ? true : false;
                     }),
-                DatePicker::make('tanggal_checkout')
+                DatePicker::make('tanggal_rencana_checkout')
                     ->label('Tanggal Checkout')
                     ->required()
                     ->readOnly(function ($operation) {
@@ -155,11 +155,11 @@ class GuestResource extends Resource
                     ->label('Email')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('tanggal_checkin')
+                TextColumn::make('tanggal_rencana_checkin')
                     ->label('Tanggal Checkin')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('tanggal_checkout')
+                TextColumn::make('tanggal_rencana_checkout')
                     ->label('Tanggal Checkout')
                     ->searchable()
                     ->sortable(),
