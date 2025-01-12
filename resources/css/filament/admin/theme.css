@@ -66,6 +66,9 @@ body {
     color: #fff !important;
 }
 
+.fi-ta-text-summary {
+    text-align: center !important;
+}
 
 @layer components {
     .fi-main {

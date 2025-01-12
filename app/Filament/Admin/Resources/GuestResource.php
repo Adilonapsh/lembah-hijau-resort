@@ -63,12 +63,10 @@ class GuestResource extends Resource
                     TextInput::make('kantor_cabang')
                         ->label('Kantor Cabang')
                         ->required(),
-                    Select::make('pendidikan_kelas')
+                    Select::make('id_kelas')
                         ->label('Pendidikan/Kelas')
-                        ->options([
-                            'BSDP 0 FOR FRONTLINER BATCH - 01/2025' => 'BSDP 0 FOR FRONTLINER BATCH - 01/2025',
-                            'BSDP 0 FOR FRONTLINER BATCH - 02/2025' => 'BSDP 0 FOR FRONTLINER BATCH - 02/2025',
-                        ]),
+                        ->options(Kelas::pluck('nama_kelas', 'id'))
+                        ->required(),
                     TextInput::make('batch')
                         ->label('Batch')
                         ->required(),
@@ -153,6 +151,14 @@ class GuestResource extends Resource
                     ->sortable(),
                 TextColumn::make('email')
                     ->label('Email')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('tanggal_rencana_checkin')
+                    ->label('Tanggal Rencana Checkin')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('tanggal_rencana_checkout')
+                    ->label('Tanggal Rencana Checkout')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('tanggal_checkin')

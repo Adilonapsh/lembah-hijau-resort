@@ -38,6 +38,9 @@
                 </div>
             </div>
         </div>
+        <div style="margin-top:2rem">
+            @livewire(\App\Filament\Admin\Widgets\TableBooking::class)
+        </div>
     </div>
 
 </x-filament-panels::page>

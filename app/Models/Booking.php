@@ -4,24 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Room extends Model
+class Booking extends Model
 {
-    protected $table = 'rooms';
+    protected $table = 'bookings';
 
     protected $guarded = ['id'];
 
     protected $casts = [
-        'guests_count' => 'integer',
-        'kapasitas' => 'integer',
+        'id_kamar' => 'json',
     ];
 
-    public function guests()
+    public function room()
     {
-        return $this->hasMany(Guests::class, 'id_kamar', 'id');
+        return $this->belongsTo(Room::class);
     }
 
     public function kelas()
     {
         return $this->belongsTo(Kelas::class, 'id_kelas', 'id');
     }
+
 }

@@ -83,6 +83,7 @@ class RegisterForm extends Component implements HasForms
                 ->body('Data Sudah Dibuat')
                 ->success()
                 ->send();
+            redirect('https://www.lembahhijauhotelresort.com/');
         } catch (\Exception $e) {
             Notification::make()
                 ->title('Gagal')
