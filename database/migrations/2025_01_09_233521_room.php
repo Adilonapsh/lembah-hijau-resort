@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('harga');
             $table->string('status');
             $table->string('kapasitas');
-            $table->integer('id_kelas');
+            $table->integer('id_kelas')->nullable();
             $table->timestamps();
         });
     }

@@ -110,8 +110,13 @@ class RoomResource extends Resource
                 Tables\Columns\TextColumn::make('id_kelas')
                     ->label('Kelas')
                     ->getStateUsing(function ($record) {
-                        return $record->kelas ?$record->kelas->nama_kelas : '-';
+                        return $record->kelas ? $record->kelas->nama_kelas : '-';
                     }),
+                // Tables\Columns\TextColumn::make('tanggal_checkin')
+                //     ->label('Tanggal Checkin')
+                //     ->getStateUsing(function ($record) {
+                //         return $record->kelas ? $record->kelas->nama_kelas : '-';
+                //     }),
             ])
             ->filters([
                 //

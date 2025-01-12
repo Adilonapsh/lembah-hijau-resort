@@ -273,13 +273,32 @@ class GuestResource extends Resource
 
     public static function processBulkAction($records, $data)
     {
+        $count = 0;
         foreach ($records as $record) {
-            $record->update([
-                'id_kamar' => $data['id_kamar'],
-            ]);
+            $kamar_dibooking = Guests::where('id_kamar', $data["id_kamar"])->whereNot("tanggal_checkout")->count();
+            $kapasitas_kamar = Room::find($data["id_kamar"]);
+            if ($data["id_kamar"]) {
+                if ($kamar_dibooking <= (int)$kapasitas_kamar->kapasitas) {
+                    $record->update([
+                        'id_kamar' => $data['id_kamar'],
+                    ]);
+                    $count = $count + 1;
+                } else {
+                    Notification::make()
+                        ->title('Kamar penuh, silahkan pilih kamar lain')
+                        ->icon('heroicon-o-check-circle')
+                        ->warning()
+                        ->send();
+                }
+            } else {
+                $count = count($records);
+                $record->update([
+                    'id_kamar' => null,
+                ]);
+            }
         }
         Notification::make()
-            ->title(count($records) . ' Tamu berhasil di set kamar')
+            ->title($count . ' Tamu berhasil di set kamar')
             ->icon('heroicon-o-check-circle')
             ->success()
             ->send();

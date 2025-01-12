@@ -6,6 +6,8 @@ use App\Filament\Admin\Resources\KelasResource\Pages;
 use App\Filament\Admin\Resources\KelasResource\RelationManagers;
 use App\Models\Kelas;
 use Filament\Forms;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -30,6 +32,13 @@ class KelasResource extends Resource
                 Forms\Components\TextInput::make('deskripsi')
                     ->label('Deskripsi')
                     ->required(),
+                // Repeater::make('batch')
+                //     ->schema([
+                //         Forms\Components\TextInput::make('batch')
+                //             ->label('Batch')
+                //             ->required(),
+                //     ])
+                //     ->columnSpanFull(),
             ]);
     }
 
@@ -45,6 +54,10 @@ class KelasResource extends Resource
                     ->label('Deskripsi')
                     ->sortable()
                     ->searchable(),
+                // TextColumn::make('batch')
+                //     ->label('Batch')
+                //     ->sortable()
+                //     ->searchable(),
             ])
             ->filters([
                 //

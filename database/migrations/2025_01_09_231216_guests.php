@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('nama');
             $table->string('jenis_kelamin');
             $table->string('kantor_cabang');
-            $table->string('id_kelas');
-            $table->string('batch');
+            $table->string('id_kelas')->nullable();
+            $table->string('batch')->nullable();
             $table->string('kendaraan');
             $table->string('no_polisi');
             $table->string('no_hp');
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->date('tanggal_rencana_checkout');
             $table->date('tanggal_checkin');
             $table->date('tanggal_checkout');
-            $table->foreignId('id_kamar')->constrained('rooms');
+            $table->foreignId('id_kamar')->constrained('rooms')->nullable();
             $table->timestamps();
         });
     }

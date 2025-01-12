@@ -13,6 +13,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class RoomStatusResource extends Resource
 {
@@ -47,8 +48,19 @@ class RoomStatusResource extends Resource
         return $table
             ->query(function () {
                 return Room::query()
+                    ->select(
+                        'rooms.*',
+                        DB::raw('MIN(guests.tanggal_checkin) as tanggal_checkin_awal'),
+                        DB::raw('MAX(guests.tanggal_checkout) as tanggal_checkout_terakhir')
+                    )
+                    ->leftJoin('guests', 'rooms.id', '=', 'guests.id_kamar')
+                    ->groupBy('rooms.id')
                     ->with(['guests' => function ($query) {
-                        $query->select('id', 'nama', 'id_kamar');
+                        $query->select(
+                            'id',
+                            'nama',
+                            'id_kamar',
+                        )->orderBy("tanggal_checkin");
                     }])
                     ->withCount('guests');
             })
@@ -78,6 +90,12 @@ class RoomStatusResource extends Resource
                     ->getStateUsing(function ($record) {
                         return $record->guests->pluck('nama');
                     }),
+                TextColumn::make('tanggal_checkin_awal')
+                    ->label('Tanggal Checkin')
+                    ->badge(),
+                TextColumn::make('tanggal_checkout_terakhir')
+                    ->label('Tanggal Checkout')
+                    ->badge(),
             ])
             ->filters([
                 //
