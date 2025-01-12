@@ -155,11 +155,11 @@ class GuestResource extends Resource
                     ->label('Email')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('tanggal_rencana_checkin')
+                TextColumn::make('tanggal_checkin')
                     ->label('Tanggal Checkin')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('tanggal_rencana_checkout')
+                TextColumn::make('tanggal_checkout')
                     ->label('Tanggal Checkout')
                     ->searchable()
                     ->sortable(),
