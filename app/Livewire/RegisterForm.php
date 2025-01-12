@@ -42,7 +42,7 @@ class RegisterForm extends Component implements HasForms
                 TextInput::make('kantor_cabang')
                     ->label('Kantor Cabang')
                     ->required(),
-                Select::make('pendidikan_kelas')
+                Select::make('id_kelas')
                     ->label('Pendidikan/Kelas')
                     ->options(Kelas::pluck('nama_kelas', 'id'))
                     ->required(),
