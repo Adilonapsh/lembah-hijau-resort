@@ -63,10 +63,10 @@ class RegisterForm extends Component implements HasForms
                     ->label('Nomor Handphone'),
                 TextInput::make('email')
                     ->label('Email'),
-                DatePicker::make('tanggal_checkin')
+                DatePicker::make('tanggal_rencana_checkin')
                     ->label('Tanggal Checkin')
                     ->required(),
-                DatePicker::make('tanggal_checkout')
+                DatePicker::make('tanggal_rencana_checkout')
                     ->label('Tanggal Checkout')
                     ->required(),
             ])
