@@ -220,9 +220,13 @@ class GuestResource extends Resource
                         Forms\Components\Select::make('id_kamar')
                             ->label('Nama Kamar')
                             ->options(function () {
-                                return Room::all()
-                                    ->pluck('nama', 'id')
-                                    ->prepend('Pilih Ruangan', '');
+                                return Room::with('kelas')->get()->map(function ($room) {
+                                    $kelas = Kelas::find($room->id_kelas) ? Kelas::find($room->id_kelas)->nama_kelas : "Belum di Set";
+                                    return [
+                                        'id' => $room->id,
+                                        'nama' => $room->nama . ' - ' . $kelas,
+                                    ];
+                                })->pluck('nama', 'id')->prepend('Pilih Ruangan', '');
                             })
                             ->searchable(),
                     ]),
