@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('room_id')->constrained();
             $table->foreignId('user_id')->constrained();
+            $table->integer('kamar_terisi')->nullable();
+            $table->integer('kamar_sisa')->nullable();
             $table->json('data_history');
             $table->timestamps();
         });

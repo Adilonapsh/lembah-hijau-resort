@@ -33,16 +33,23 @@ class RoomReportTotal extends Component implements HasForms, HasTable
     {
         return $table
             ->query(function () {
+                // $room = RoomReportHistory::query();
+                // $room->select(
+                //     DB::raw('DATE(created_at) as date'),
+                //     DB::raw('SUM(CAST(COALESCE(json_extract_path_text(data_history, \'guests_count\'), \'0\') AS INTEGER)) as total_terisi'),
+                //     DB::raw('SUM(CAST(COALESCE(json_extract_path_text(data_history, \'tersisa\'), \'0\') AS INTEGER)) as total_tersisa'),
+                // )
+                //     ->groupBy(DB::raw('DATE(created_at)'))
+                //     ->orderBy('date', 'asc');
+                // return $room;
                 $room = RoomReportHistory::query();
                 $room->select(
                     DB::raw('DATE(created_at) as date'),
-                    DB::raw('SUM(CAST(COALESCE(json_extract_path_text(data_history, \'guests_count\'), \'0\') AS INTEGER)) as total_terisi'),
-                    DB::raw('SUM(CAST(COALESCE(json_extract_path_text(data_history, \'tersisa\'), \'0\') AS INTEGER)) as total_tersisa'),
+                    DB::raw('SUM(CASE WHEN CAST(COALESCE(json_extract_path_text(data_history, \'guests_count\'), \'0\') AS INTEGER) > 0 THEN 1 ELSE 0 END) as kamar_terisi'),
+                    DB::raw('SUM(CASE WHEN CAST(COALESCE(json_extract_path_text(data_history, \'guests_count\'), \'0\') AS INTEGER) = 0 THEN 1 ELSE 0 END) as kamar_kosong')
                 )
                     ->groupBy(DB::raw('DATE(created_at)'))
                     ->orderBy('date', 'asc');
-
-                // dd($room->get());
                 return $room;
             })
             ->columns([
@@ -50,10 +57,10 @@ class RoomReportTotal extends Component implements HasForms, HasTable
                     ->label('Tanggal Laporan')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('total_terisi')
-                    ->label('Total Bed Terisi'),
-                TextColumn::make('total_tersisa')
-                    ->label('Total Sisa Bed'),
+                TextColumn::make('kamar_terisi')
+                    ->label('Total Kamar Terisi'),
+                TextColumn::make('kamar_kosong')
+                    ->label('Total Kamar Kosong'),
             ])
             ->filters([
                 Filter::make('created_at')

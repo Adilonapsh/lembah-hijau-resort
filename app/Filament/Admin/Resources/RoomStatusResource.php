@@ -153,10 +153,13 @@ class RoomStatusResource extends Resource
                     ->icon('heroicon-o-chart-bar')
                     ->action(function () {
                         $data = Room::withCount('guests')->get();
-                        $data->each(function ($room) {
-                            $room->kapasitas = $room->kapasitas;
+                        $count_kamar = 0;
+                        $data->each(function ($room) use (&$count_kamar) {
                             $room->tersisa = $room->kapasitas - $room->guests_count;
                             $room->nama_tamu = $room->guests->pluck('nama');
+                            if ($room->guests_count > 0) {
+                                $count_kamar++;
+                            }
                         });
                         if (RoomReportHistory::where('created_at', '>=', now()->startOfDay())->exists()) {
                             Notification::make()
@@ -168,10 +171,13 @@ class RoomStatusResource extends Resource
 
                             return;
                         } else {
+                            $kamar_sisa = Room::count() - $count_kamar;
                             foreach ($data as $room) {
                                 RoomReportHistory::create([
                                     'room_id' => $room->id,
                                     'user_id' => auth()->id(),
+                                    'kamar_terisi' => $count_kamar,
+                                    'kamar_sisa' => $kamar_sisa,
                                     'data_history' => $room->toArray(),
                                 ]);
                             }
@@ -190,7 +196,7 @@ class RoomStatusResource extends Resource
                             $query->whereNotNull('tanggal_checkin')
                                 ->whereNull('tanggal_checkout');
                         })->count();
-                        $result = number_format(($kamar_terisi/$total_kamar * 100), 2);
+                        $result = number_format(($kamar_terisi / $total_kamar * 100), 2);
                         return 'Occupancies : ' . $result . "%";
                     })
                     ->icon('heroicon-o-chart-bar')

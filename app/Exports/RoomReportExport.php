@@ -17,8 +17,10 @@ class RoomReportExport implements FromCollection, WithHeadings
         $room = RoomReportHistory::query();
         $room->select(
             DB::raw('DATE(created_at) as date'),
-            DB::raw('SUM(CAST(COALESCE(json_extract_path_text(data_history, \'guests_count\'), \'0\') AS INTEGER)) as total_terisi'),
-            DB::raw('SUM(CAST(COALESCE(json_extract_path_text(data_history, \'tersisa\'), \'0\') AS INTEGER)) as total_tersisa'),
+            // DB::raw('SUM(CAST(COALESCE(json_extract_path_text(data_history, \'guests_count\'), \'0\') AS INTEGER)) as total_terisi'),
+            // DB::raw('SUM(CAST(COALESCE(json_extract_path_text(data_history, \'tersisa\'), \'0\') AS INTEGER)) as total_tersisa'),
+            DB::raw('SUM(CASE WHEN CAST(COALESCE(json_extract_path_text(data_history, \'guests_count\'), \'0\') AS INTEGER) > 0 THEN 1 ELSE 0 END) as kamar_terisi'),
+            DB::raw('SUM(CASE WHEN CAST(COALESCE(json_extract_path_text(data_history, \'guests_count\'), \'0\') AS INTEGER) = 0 THEN 1 ELSE 0 END) as kamar_kosong')
         )
             ->groupBy(DB::raw('DATE(created_at)'))
             ->orderBy('date', 'asc');
